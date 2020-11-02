@@ -19,7 +19,7 @@ unsigned long lastMovementTimestamp;
 void setup() {
   delay(1);
   // Enable the weak pull down resistors
-  ESP32Encoder::useInternalWeakPullResistors=true;
+  ESP32Encoder::useInternalWeakPullResistors=UP;
   // set starting count value
   encoder.clearCount();
   // Attach pins for use as encoder pins
@@ -57,8 +57,11 @@ void loop() {
     return;
   }
   digitalWrite(enablePin, LOW); //activate driver
+  //Serial.println(encoderPosition);
+  //Serial.println(lastEncoderPosition);
   
   lastMovementTimestamp = millis();
+  delay(1);
   if(encoderPosition > lastEncoderPosition)
   {
     digitalWrite(directionPin, LOW);
@@ -69,8 +72,10 @@ void loop() {
   }
   delay(1);
   long stepCount = abs(encoderPosition - lastEncoderPosition);
+  Serial.println(stepCount);
+  Serial.println(stepCount * log(stepCount));
   lastEncoderPosition = encoderPosition;
-  for(int i = 0; i < stepCount * log(stepCount); i++)
+  for(int i = 0; i < stepCount * log(stepCount + 1); i++)
   {
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(50);
